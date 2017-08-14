@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -361,8 +362,9 @@ public class MainActivity extends Activity implements OnKeyboardEventListener, O
 
       String text = textView.getText().toString();
 
-      // Facebook API via SDK not done through intents
-     // if (!Arrays.asList(FB_PACKAGE_NAMES).contains(packageName)) {
+      // Sharing to Facebook isn't done through intents anymore. Trying to do so creates a
+      // blank post. Facebook SDK provides a separate method.
+      if (!Arrays.asList(FB_PACKAGE_NAMES).contains(packageName)) {
         if (packageName.equals("com.google.android.gm")) {
           // Html string for Gmail
           String htmlMailFormat = "<html><head></head><body>%s%s</body></html>";
@@ -380,9 +382,10 @@ public class MainActivity extends Activity implements OnKeyboardEventListener, O
         }
 
         shareIntents.add(shareIntent);
-     // }
+      }
     }
 
+    /*
     Intent fbShareIntent = new Intent(this, FBShareActivity.class);
     fbShareIntent.setAction(Intent.ACTION_SEND);
     fbShareIntent.setType("text/plain");
@@ -398,31 +401,24 @@ public class MainActivity extends Activity implements OnKeyboardEventListener, O
     fbShareIntent.setComponent(name);
     shareIntents.add(fbShareIntent);
     shareIntents.add(new LabeledIntent(fbShareIntent, getPackageName(), "Facebook", R.drawable.ic_facebook_logo));
+    */
 
     Intent chooserIntent = Intent.createChooser(shareIntents.remove(0), "Share via");
     chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, shareIntents.toArray(new Parcelable[]{}));
     startActivity(chooserIntent);
   }
 
+  /**
+   * Use the Facebook SDK to share. Share dialog currently limits to sharing multimedia or URL
+   * Reference: https://developers.facebook.com/docs/sharing/android
+   */
   private void showFBShareDialog() {
-    final int branch = 2;
-    if (branch == 1) {
-      // This way works through the FBShareActivity
-      Intent fbShareIntent = new Intent(this, FBShareActivity.class);
-      fbShareIntent.putExtra("messageText", textView.getText().toString());
-      fbShareIntent.putExtra("messageTextSize", (float) textSize);
-      fbShareIntent.putExtra("messageTextTypeface", KMManager.getKeyboardTextFontFilename());
-      startActivity(fbShareIntent);
-      overridePendingTransition(android.R.anim.fade_in, R.anim.hold);
-    } else if (branch == 2) {
-      // This way works through the Facebook SDK call
-      ShareContent fbContent = new ShareLinkContent.Builder()
-        .setQuote(textView.getText().toString())
-        .setContentUrl(Uri.parse("https://keyman.com"))
-        .build();
+    ShareContent fbContent = new ShareLinkContent.Builder()
+      .setQuote(textView.getText().toString())
+      .setContentUrl(Uri.parse("https://keyman.com"))
+      .build();
 
-      shareDialog.show(this, fbContent);
-    }
+    shareDialog.show(this, fbContent);
   }
 
   @SuppressLint("InflateParams")
