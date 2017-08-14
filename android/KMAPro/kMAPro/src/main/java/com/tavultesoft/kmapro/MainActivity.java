@@ -13,13 +13,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.share.Sharer;
+import com.facebook.share.model.ShareContent;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 import com.tavultesoft.kmea.KMManager;
-
 import com.tavultesoft.kmea.KMManager.KeyboardType;
 import com.tavultesoft.kmea.KMTextView;
 import com.tavultesoft.kmea.KeyboardEventHandler.OnKeyboardDownloadEventListener;
 import com.tavultesoft.kmea.KeyboardEventHandler.OnKeyboardEventListener;
 
+import android.content.ComponentName;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -71,6 +79,8 @@ public class MainActivity extends Activity implements OnKeyboardEventListener, O
   protected static final String dontShowGetStartedKey = "DontShowGetStarted";
   protected static final String didCheckUserDataKey = "DidCheckUserData";
   private Menu menu;
+  private ShareDialog shareDialog;
+  CallbackManager callbackManager;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +116,22 @@ public class MainActivity extends Activity implements OnKeyboardEventListener, O
     } else {
       checkGetStarted();
     }
+
+    callbackManager = CallbackManager.Factory.create();
+    shareDialog = new ShareDialog(this);
+    shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
+      @Override
+      public void onSuccess(Sharer.Result result) {
+      }
+
+      @Override
+      public void onCancel() {
+      }
+
+      @Override
+      public void onError(FacebookException error) {
+      }
+    });
   }
 
   @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -113,6 +139,10 @@ public class MainActivity extends Activity implements OnKeyboardEventListener, O
   public void onActivityResult(int requestCode, int resultCode, Intent returnIntent) {
     if (resultCode != RESULT_OK) {
       checkGetStarted();
+      return;
+    } else if (FacebookSdk.isFacebookRequestCode(requestCode)) {
+      // Handle Facebook callback with callbackManager
+      callbackManager.onActivityResult(requestCode, resultCode, returnIntent);
       return;
     } else {
       boolean didFail = false;
@@ -228,6 +258,9 @@ public class MainActivity extends Activity implements OnKeyboardEventListener, O
       case R.id.action_share:
         showShareDialog();
         return true;
+      case R.id.action_fb_share:
+        showFBShareDialog();
+        return true;
       case R.id.action_web:
         showWebBrowser();
         return true;
@@ -318,25 +351,22 @@ public class MainActivity extends Activity implements OnKeyboardEventListener, O
     intent.putExtra(Intent.EXTRA_TEXT, textView.getText().toString());
 
     List<ResolveInfo> resInfo = getPackageManager().queryIntentActivities(intent, 0);
-    String fbPackageName = "com.facebook.katana";
+    final String[] FB_PACKAGE_NAMES = {"com.facebook.katana", "com.facebook.lite"};
 
     for (ResolveInfo resolveInfo : resInfo) {
-      String packageName = resolveInfo.activityInfo.packageName;
-
+      String packageName = resolveInfo.activityInfo.packageName.toLowerCase();
       Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
       shareIntent.setType("text/plain");
       shareIntent.setPackage(packageName);
 
       String text = textView.getText().toString();
-      String htmlMailFormat = "<html><head></head><body>%s%s</body></html>";
-      String extraMailText = "<br><br>Sent from&nbsp<a href=\"http://keyman.com/android\">Keyman for Android</a>";
 
-      if (!packageName.equals(fbPackageName)) {
-        if (packageName.equals("com.android.email")) {
-          // Text for email app, it doesn't currently support HTML
-          shareIntent.putExtra(Intent.EXTRA_TEXT, text);
-        } else if (packageName.equals("com.google.android.gm")) {
+      // Facebook API via SDK not done through intents
+     // if (!Arrays.asList(FB_PACKAGE_NAMES).contains(packageName)) {
+        if (packageName.equals("com.google.android.gm")) {
           // Html string for Gmail
+          String htmlMailFormat = "<html><head></head><body>%s%s</body></html>";
+          String extraMailText = "<br><br>Sent from&nbsp<a href=\"http://keyman.com/android\">Keyman for Android</a>";
           shareIntent.setType("message/rfc822");
           text = text.replace("<", "&lt;");
           text = text.replace(">", "&gt;");
@@ -344,27 +374,55 @@ public class MainActivity extends Activity implements OnKeyboardEventListener, O
           text = text.replace('\n', ' ');
           text = text.replace(" ", "<br>");
           shareIntent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(String.format(htmlMailFormat, text, extraMailText)));
-        } else if (packageName.equals("com.twitter.android")) {
-          // Text for Twitter
-          shareIntent.putExtra(Intent.EXTRA_TEXT, text);
         } else {
           // Text for all others
           shareIntent.putExtra(Intent.EXTRA_TEXT, text);
         }
 
         shareIntents.add(shareIntent);
-      }
+     // }
     }
 
     Intent fbShareIntent = new Intent(this, FBShareActivity.class);
+    fbShareIntent.setAction(Intent.ACTION_SEND);
+    fbShareIntent.setType("text/plain");
+    fbShareIntent.putExtra(Intent.EXTRA_SUBJECT, "Keyman");
+    fbShareIntent.putExtra(Intent.EXTRA_TEXT, textView.getText().toString()); //R.drawable.ic_facebook_logo );
+
+    final ComponentName name = new ComponentName(FB_PACKAGE_NAMES[1], "Facebook");
+    fbShareIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+    fbShareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED );
     fbShareIntent.putExtra("messageText", textView.getText().toString());
     fbShareIntent.putExtra("messageTextSize", (float) textSize);
     fbShareIntent.putExtra("messageTextTypeface", KMManager.getKeyboardTextFontFilename());
+    fbShareIntent.setComponent(name);
+    shareIntents.add(fbShareIntent);
     shareIntents.add(new LabeledIntent(fbShareIntent, getPackageName(), "Facebook", R.drawable.ic_facebook_logo));
 
     Intent chooserIntent = Intent.createChooser(shareIntents.remove(0), "Share via");
     chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, shareIntents.toArray(new Parcelable[]{}));
     startActivity(chooserIntent);
+  }
+
+  private void showFBShareDialog() {
+    final int branch = 2;
+    if (branch == 1) {
+      // This way works through the FBShareActivity
+      Intent fbShareIntent = new Intent(this, FBShareActivity.class);
+      fbShareIntent.putExtra("messageText", textView.getText().toString());
+      fbShareIntent.putExtra("messageTextSize", (float) textSize);
+      fbShareIntent.putExtra("messageTextTypeface", KMManager.getKeyboardTextFontFilename());
+      startActivity(fbShareIntent);
+      overridePendingTransition(android.R.anim.fade_in, R.anim.hold);
+    } else if (branch == 2) {
+      // This way works through the Facebook SDK call
+      ShareContent fbContent = new ShareLinkContent.Builder()
+        .setQuote(textView.getText().toString())
+        .setContentUrl(Uri.parse("https://keyman.com"))
+        .build();
+
+      shareDialog.show(this, fbContent);
+    }
   }
 
   @SuppressLint("InflateParams")
