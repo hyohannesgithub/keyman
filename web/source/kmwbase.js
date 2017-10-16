@@ -582,6 +582,7 @@ if(!tavultesoft['keymanweb']) {
 
     device.touchable = true;
     device.formFactor = 'tablet';
+    device.OS = 'Android';
 
   /* If we've made it to this point of initialization and aren't anything else, KeymanWeb assumes 
     * we're a desktop.  Since we don't yet support desktops with touch-based input, we disable it here.
