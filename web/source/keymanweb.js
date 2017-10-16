@@ -182,13 +182,17 @@ if(!window['tavultesoft']['keymanweb']['initialized']) {
         // Allow external code to set focus and thus display the OSK on touch devices if required (KMEW-123)
         else 
         {
-          tEvent={clientX:0,clientY:0}
+          tEvent={clientX:0,clientY:0};
           // Will usually be called from setActiveElement, which should define _LastActiveElement
-          if(keymanweb._LastActiveElement) 
-            tEvent.target = keymanweb._LastActiveElement['kmw_ip'];
+          if(keymanweb._LastActiveElement) {
+            tEvent.target = keymanweb._LastActiveElement;
           // but will default to first input or text area on page if _LastActiveElement is null
-          else 
-            tEvent.target = keymanweb.sortedInputs[0]['kmw_ip'];
+          } else {
+            tEvent.target = keymanweb.sortedInputs[0];
+          }
+          if(tEvent.target['kmw_ip']) {
+            tEvent.target = tEvent.target['kmw_ip'];
+          }
         }    
         
         var touchX=tEvent.clientX,touchY=tEvent.clientY,tTarg=tEvent.target,scroller;
@@ -984,6 +988,9 @@ if(!window['tavultesoft']['keymanweb']['initialized']) {
           e.stopPropagation();
         };
         
+        x.addEventListener('focus', keymanweb._ControlFocus);
+        x.addEventListener('blur', keymanweb._ControlBlur);
+
         // Disable internal scroll when input element in focus 
         x.addEventListener('touchmove', keymanweb.dragInput, false);
         x.onmspointermove=keymanweb.dragInput;
@@ -2419,11 +2426,14 @@ if(!window['tavultesoft']['keymanweb']['initialized']) {
 
       // Or if not a remappable input field
       var en=Ltarg.nodeName.toLowerCase();
-      if(en == 'input')
-      {
+      if(device.touchable && Ltarg.className == 'keymanweb-input') {
+        //keymanweb.setFocus({touches:[Ltarg]});
+        keymanweb.setActiveElement(Ltarg, true);
+        return true; // TODO: Forward to the touch handler if appropriate!        
+      } else if(en == 'input') {
         var et=Ltarg.type.toLowerCase();
         if(!(et == 'text' || et == 'search')) return true;
-      } else if((device.touchable || !Ltarg.isContentEditable) && en != 'textarea') {
+      } else if(!Ltarg.isContentEditable && (en != 'textarea')) { 
         return true;
       }
 
@@ -4206,7 +4216,9 @@ if(!window['tavultesoft']['keymanweb']['initialized']) {
         keymanweb.KRS(keymanweb.deferredKRS[j]);
     
       // Initialize the desktop UI
-      keymanweb.initializeUI()
+      if(!device.touchable) {
+        keymanweb.initializeUI();
+      }
     
       // Register deferred keyboards 
       for(j=0; j<keymanweb.deferredKR.length; j++)

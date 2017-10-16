@@ -580,12 +580,15 @@ if(!tavultesoft['keymanweb']) {
     
     END DEBUG */
 
+    device.touchable = true;
+    device.formFactor = 'tablet';
+
   /* If we've made it to this point of initialization and aren't anything else, KeymanWeb assumes 
     * we're a desktop.  Since we don't yet support desktops with touch-based input, we disable it here.
     */                     
-  if(device.formFactor == 'desktop') {
-    device.touchable = false;
-  }
+  // if(device.formFactor == 'desktop') {
+  //   device.touchable = false;
+  // }
                         
     /**
      * Expose the touchable state for UIs - will disable external UIs entirely

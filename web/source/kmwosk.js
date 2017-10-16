@@ -1655,6 +1655,7 @@ if(!window['tavultesoft']['keymanweb']['initialized']) {
       kb.addEventListener('touchmove',touchMove,false);
       kb.onmspointerout=touchEnd;
       kb.addEventListener('touchend',touchEnd,false);
+      kb.onmouseup=touchEnd;
     }
 
     /**
@@ -1891,7 +1892,7 @@ if(!window['tavultesoft']['keymanweb']['initialized']) {
     osk.mouseOverMouseDownHandler = function(e)
     {
       var t=util.eventTarget(e);
-      if(t === null || device.formFactor != 'desktop') return;
+      if(t === null /*|| device.formFactor != 'desktop'*/) return;
 
       if(t.nodeName == 'SPAN') t=t.parentNode;
       if(util.eventType(e) == 'mousedown')
@@ -1913,7 +1914,7 @@ if(!window['tavultesoft']['keymanweb']['initialized']) {
     osk.mouseUpMouseOutHandler = function(e)
     {
       var t=util.eventTarget(e);
-      if(t === null || device.formFactor != 'desktop') return;
+      if(t === null /*|| device.formFactor != 'desktop'*/) return;
 
       if(t.nodeName == 'SPAN') t=t.parentNode;
       osk.highlightKey(t,false);
@@ -2259,14 +2260,14 @@ if(!window['tavultesoft']['keymanweb']['initialized']) {
 
               // Define callbacks to handle key touches: iOS and Android tablets and phones
               // TODO: replace inline function calls??
-              if(!device.touchable)
-              {
+              //if(!device.touchable)
+              //{
                 // Highlight key while mouse down or if moving back over originally selected key
                 btn.onmouseover=btn.onmousedown=osk.mouseOverMouseDownHandler; // Build 360
 
                 // Remove highlighting when key released or moving off selected element
                 btn.onmouseup=btn.onmouseout=osk.mouseUpMouseOutHandler; //Build 360
-              }
+              //}
 
               // Add OSK key labels
               var t=util._CreateElement('SPAN'),ts=t.style;
