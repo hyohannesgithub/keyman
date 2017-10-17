@@ -2,7 +2,7 @@
  * Copyright (C) 2017 SIL International. All rights reserved.
  */
 
-package com.tavultesoft.kmea;
+package com.keyman.kmea;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -53,9 +53,9 @@ import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
-import com.tavultesoft.kmea.KeyboardEventHandler.EventType;
-import com.tavultesoft.kmea.KeyboardEventHandler.OnKeyboardDownloadEventListener;
-import com.tavultesoft.kmea.KeyboardEventHandler.OnKeyboardEventListener;
+import com.keyman.kmea.KeyboardEventHandler.EventType;
+import com.keyman.kmea.KeyboardEventHandler.OnKeyboardDownloadEventListener;
+import com.keyman.kmea.KeyboardEventHandler.OnKeyboardEventListener;
 
 public final class KMManager {
 

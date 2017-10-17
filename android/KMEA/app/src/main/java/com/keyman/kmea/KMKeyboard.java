@@ -2,7 +2,7 @@
  * Copyright (C) 2017 SIL International. All rights reserved.
  */
 
-package com.tavultesoft.kmea;
+package com.keyman.kmea;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,9 +11,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.tavultesoft.kmea.KMManager.KeyboardType;
-import com.tavultesoft.kmea.KeyboardEventHandler.EventType;
-import com.tavultesoft.kmea.KeyboardEventHandler.OnKeyboardEventListener;
+import com.keyman.kmea.KMManager.KeyboardType;
+import com.keyman.kmea.KeyboardEventHandler.EventType;
+import com.keyman.kmea.KeyboardEventHandler.OnKeyboardEventListener;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

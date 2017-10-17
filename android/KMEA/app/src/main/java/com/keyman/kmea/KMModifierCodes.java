@@ -1,4 +1,4 @@
-package com.tavultesoft.kmea;
+package com.keyman.kmea;
 
 import java.util.HashMap;
 

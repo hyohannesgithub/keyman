@@ -2,7 +2,7 @@
  * Copyright (C) 2017 SIL International. All rights reserved.
  */
 
-package com.tavultesoft.kmapro;
+package com.keyman.kmapro;
 
 import java.util.ArrayList;
 

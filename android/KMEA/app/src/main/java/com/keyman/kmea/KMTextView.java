@@ -2,13 +2,13 @@
  * Copyright (C) 2017 SIL International. All rights reserved.
  */
 
-package com.tavultesoft.kmea;
+package com.keyman.kmea;
 
 import java.util.ArrayList;
 
-import com.tavultesoft.kmea.KMManager.KeyboardType;
-import com.tavultesoft.kmea.KeyboardEventHandler.EventType;
-import com.tavultesoft.kmea.KeyboardEventHandler.OnKeyboardEventListener;
+import com.keyman.kmea.KMManager.KeyboardType;
+import com.keyman.kmea.KeyboardEventHandler.EventType;
+import com.keyman.kmea.KeyboardEventHandler.OnKeyboardEventListener;
 
 import android.app.Activity;
 import android.content.Context;

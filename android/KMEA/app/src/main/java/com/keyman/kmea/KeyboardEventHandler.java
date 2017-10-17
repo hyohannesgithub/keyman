@@ -2,12 +2,12 @@
  * Copyright (C) 2017 SIL International. All rights reserved.
  */
 
-package com.tavultesoft.kmea;
+package com.keyman.kmea;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.tavultesoft.kmea.KMManager.KeyboardType;
+import com.keyman.kmea.KMManager.KeyboardType;
 
 public final class KeyboardEventHandler {
 

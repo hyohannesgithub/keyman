@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tavultesoft.kmapro" >
+    package="com.keyman.kmapro" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -12,7 +12,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <receiver android:name="com.tavultesoft.kmapro.NetworkStateReceiver" >
+        <receiver android:name="com.keyman.kmapro.NetworkStateReceiver" >
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
@@ -32,7 +32,7 @@
         </service>
 
         <activity
-            android:name="com.tavultesoft.kmapro.MainActivity"
+            android:name="com.keyman.kmapro.MainActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize"
             android:label="@string/app_name"
             android:launchMode="singleTask" >
@@ -48,22 +48,22 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tavultesoft.kmapro.InfoActivity"
+            android:name="com.keyman.kmapro.InfoActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="com.tavultesoft.kmapro.WebBrowserActivity"
+            android:name="com.keyman.kmapro.WebBrowserActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="com.tavultesoft.kmapro.BookmarksActivity"
+            android:name="com.keyman.kmapro.BookmarksActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="com.tavultesoft.kmapro.GetStartedActivity"
+            android:name="com.keyman.kmapro.GetStartedActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize"
             android:label="@string/app_name"
             android:launchMode="singleTask"

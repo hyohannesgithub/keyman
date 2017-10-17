@@ -2,12 +2,12 @@
  * Copyright (C) 2017 SIL International. All rights reserved.
  */
 
-package com.tavultesoft.kmapro;
+package com.keyman.kmapro;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import com.tavultesoft.kmea.KMManager;
+import com.keyman.kmea.KMManager;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

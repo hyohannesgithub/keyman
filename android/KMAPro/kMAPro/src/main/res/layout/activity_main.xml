@@ -6,7 +6,7 @@
     android:background="@color/yellow_background"
     tools:context=".MainActivity" >
 
-    <com.tavultesoft.kmea.KMTextView
+    <com.keyman.kmea.KMTextView
         android:id="@+id/kmTextView"
         android:background="@drawable/textview_bg"
         android:layout_width="match_parent"
@@ -19,6 +19,6 @@
         android:scrollbars="vertical" >
 
         <requestFocus />
-    </com.tavultesoft.kmea.KMTextView>
+    </com.keyman.kmea.KMTextView>
 
 </RelativeLayout>

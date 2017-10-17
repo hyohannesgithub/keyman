@@ -4,11 +4,11 @@
 
 package com.keyman.android;
 
-import com.tavultesoft.kmapro.BuildConfig;
-import com.tavultesoft.kmea.KMManager;
-import com.tavultesoft.kmea.KMManager.KeyboardType;
-import com.tavultesoft.kmea.KMHardwareKeyboardInterpreter;
-import com.tavultesoft.kmea.KeyboardEventHandler.OnKeyboardEventListener;
+import com.keyman.kmapro.BuildConfig;
+import com.keyman.kmea.KMManager;
+import com.keyman.kmea.KMManager.KeyboardType;
+import com.keyman.kmea.KMHardwareKeyboardInterpreter;
+import com.keyman.kmea.KeyboardEventHandler.OnKeyboardEventListener;
 
 import android.content.Context;
 import android.content.res.Configuration;

@@ -2,7 +2,7 @@
  * Copyright (C) 2017 SIL International. All rights reserved.
  */
 
-package com.tavultesoft.kmapro;
+package com.keyman.kmapro;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,12 +14,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import com.tavultesoft.kmea.KMManager;
+import com.keyman.kmea.KMManager;
 
-import com.tavultesoft.kmea.KMManager.KeyboardType;
-import com.tavultesoft.kmea.KMTextView;
-import com.tavultesoft.kmea.KeyboardEventHandler.OnKeyboardDownloadEventListener;
-import com.tavultesoft.kmea.KeyboardEventHandler.OnKeyboardEventListener;
+import com.keyman.kmea.KMManager.KeyboardType;
+import com.keyman.kmea.KMTextView;
+import com.keyman.kmea.KeyboardEventHandler.OnKeyboardDownloadEventListener;
+import com.keyman.kmea.KeyboardEventHandler.OnKeyboardEventListener;
 
 import android.net.Uri;
 import android.os.Build;

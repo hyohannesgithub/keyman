@@ -2,7 +2,7 @@
  * Copyright (C) 2017 SIL International. All rights reserved.
  */
 
-package com.tavultesoft.kmapro;
+package com.keyman.kmea;
 
 import java.util.List;
 import java.util.Map;
@@ -22,11 +22,7 @@ final class KMListAdapter extends SimpleAdapter {
     enabled = new boolean[length];
     for (int i = 0; i < length; i++) {
       String value = data.get(i).get("isEnabled").toString();
-      if (value.equals("true")) {
-        enabled[i] = true;
-      } else {
-        enabled[i] = false;
-      }
+      enabled[i] = value.equals("true");
     }
   }
 

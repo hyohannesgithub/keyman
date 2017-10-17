@@ -2,14 +2,14 @@
  * Copyright (C) 2017 SIL International. All rights reserved.
  */
 
-package com.tavultesoft.kmapro;
+package com.keyman.kmapro;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.tavultesoft.kmapro.R;
-import com.tavultesoft.kmea.KMManager;
+import com.keyman.kmapro.R;
+import com.keyman.kmea.KMManager;
 
 import android.os.Bundle;
 import android.provider.Settings;

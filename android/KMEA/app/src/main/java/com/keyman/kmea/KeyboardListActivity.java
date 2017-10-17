@@ -2,7 +2,7 @@
  * Copyright (C) 2017 SIL International. All rights reserved.
  */
 
-package com.tavultesoft.kmea;
+package com.keyman.kmea;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,7 +11,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.tavultesoft.kmea.KeyboardEventHandler.OnKeyboardDownloadEventListener;
+import com.keyman.kmea.KeyboardEventHandler.OnKeyboardDownloadEventListener;
 
 import android.app.Activity;
 import android.app.AlertDialog;

@@ -2,7 +2,7 @@
  * Copyright (C) 2017 SIL International. All rights reserved.
  */
 
-package com.tavultesoft.kmea;
+package com.keyman.kmea;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,7 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.tavultesoft.kmea.KeyboardEventHandler.OnKeyboardDownloadEventListener;
+import com.keyman.kmea.KeyboardEventHandler.OnKeyboardDownloadEventListener;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
