@@ -1637,7 +1637,8 @@ if(!window['tavultesoft']['keymanweb']['initialized']) {
           keymanweb.focusing=true;
           keymanweb.focusTimer=window.setTimeout(function(){keymanweb.focusing=false;},1000);
 
-          osk.lgList.style.display='none'; //still allows blank menu momentarily on selection
+          osk.lgList.style.display='none';  //still allows blank menu momentarily on selection
+          keymanweb._ActiveElement = keymanweb._LastActiveElement;  // Do NOT use the API that sets focus here!  (Needed for desktop route; ._Show is blocked otherwise.)
           keymanweb._SetActiveKeyboard(this.kn,this.kc,true);
           keymanweb.doKeyboardChange(this.kn,this.kc);
           keymanweb._FocusLastActiveElement();
@@ -1647,9 +1648,19 @@ if(!window['tavultesoft']['keymanweb']['initialized']) {
           osk._Show();
         }
         return true;
+      }, mouseStart=function(e)
+      {
+        e.stopPropagation();
+        if(this.className.indexOf('selected') <= 0) this.className=this.className+' selected';
+        osk.lgList.scrolling=false;
+        //osk.lgList.y0=e.touches[0].pageY;//osk.lgList.childNodes[0].scrollTop;
+        keymanweb.focusing = true;
+        keymanweb._IsActivatingKeymanWebUI = 1;
+        return true;
       };
 
       kb.onmspointerdown=touchStart;
+      kb.onmousedown=mouseStart;
       kb.addEventListener('touchstart',touchStart,false);
       kb.onmspointermove=touchMove;
       kb.addEventListener('touchmove',touchMove,false);

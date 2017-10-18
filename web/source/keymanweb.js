@@ -317,28 +317,33 @@ if(!window['tavultesoft']['keymanweb']['initialized']) {
          */  
         var keyboardID = keymanweb._ActiveKeyboard ? keymanweb._ActiveKeyboard['KI'] : '';
 
-        if(keymanweb._LastActiveElement && keymanweb._LastActiveElement._kmwAttachment.keyboard != null) {
-          keymanweb._LastActiveElement._kmwAttachment.keyboard = keyboardID;
-          keymanweb._LastActiveElement._kmwAttachment.languageCode = keymanweb.getActiveLanguage();
-        } else { 
-          keymanweb.globalKeyboard = keyboardID;
-          keymanweb.globalLanguageCode = keymanweb.getActiveLanguage();
-        }
+        // Mouse-based interactions can lead to this handler being triggered during a keyboard load attempt.
+        // The control doesn't actually change in this case.
+        //if(keymanweb._ActiveStub.asyncLoader == null) {
+        if(keymanweb._LastActiveElement != keymanweb._ActiveElement) {
+          if(keymanweb._LastActiveElement && keymanweb._LastActiveElement._kmwAttachment.keyboard != null) {
+            keymanweb._LastActiveElement._kmwAttachment.keyboard = keyboardID;
+            keymanweb._LastActiveElement._kmwAttachment.languageCode = keymanweb.getActiveLanguage();
+          } else { 
+            keymanweb.globalKeyboard = keyboardID;
+            keymanweb.globalLanguageCode = keymanweb.getActiveLanguage();
+          }
 
-        // With the attachment API update, we now directly track the old legacy control behavior.
-        keymanweb._LastActiveElement = target;
+          // With the attachment API update, we now directly track the old legacy control behavior.
+          keymanweb._LastActiveElement = target;
 
-        /**
-         * If we 'just activated' the KeymanWeb UI, we need to save the new keyboard change as appropriate.
-         * If not, we need to activate the control's preferred keyboard.
-         */
-        keyboardID = keymanweb._ActiveKeyboard == null ? '' : keymanweb._ActiveKeyboard['KI'];
-    
-        if(keymanweb._LastActiveElement._kmwAttachment.keyboard != null) {      
-          keymanweb.setActiveKeyboard(keymanweb._LastActiveElement._kmwAttachment.keyboard, 
-            keymanweb._LastActiveElement._kmwAttachment.languageCode); 
-        } else { 
-          keymanweb.setActiveKeyboard(keymanweb.globalKeyboard, keymanweb.globalLanguageCode);
+          /**
+           * If we 'just activated' the KeymanWeb UI, we need to save the new keyboard change as appropriate.
+           * If not, we need to activate the control's preferred keyboard.
+           */
+          keyboardID = keymanweb._ActiveKeyboard == null ? '' : keymanweb._ActiveKeyboard['KI'];
+      
+          if(keymanweb._LastActiveElement._kmwAttachment.keyboard != null) {      
+            keymanweb.setActiveKeyboard(keymanweb._LastActiveElement._kmwAttachment.keyboard, 
+              keymanweb._LastActiveElement._kmwAttachment.languageCode); 
+          } else { 
+            keymanweb.setActiveKeyboard(keymanweb.globalKeyboard, keymanweb.globalLanguageCode);
+          }
         }
         
         //TODO: the logic of the following line doesn't look right!!  Both variables are true, but that doesn't make sense!
@@ -2424,6 +2429,9 @@ if(!window['tavultesoft']['keymanweb']['initialized']) {
       // Prevent any action if a protected input field
       if(device.touchable && (Ltarg.className == null || Ltarg.className.indexOf('keymanweb-input') < 0)) return true;
 
+      // Must be placed before the 'touchable' check or click-based interaction will never set an active element when touch is enabled!
+      keymanweb._ActiveElement=Ltarg;  // I3363 (Build 301)  
+      
       // Or if not a remappable input field
       var en=Ltarg.nodeName.toLowerCase();
       if(device.touchable && Ltarg.className == 'keymanweb-input') {
@@ -2436,8 +2444,6 @@ if(!window['tavultesoft']['keymanweb']['initialized']) {
       } else if(!Ltarg.isContentEditable && (en != 'textarea')) { 
         return true;
       }
-
-      keymanweb._ActiveElement=Ltarg;  // I3363 (Build 301)  
 
       if (Ltarg.nodeType == 3) // defeat Safari bug
         Ltarg = Ltarg.parentNode;
@@ -2628,7 +2634,9 @@ if(!window['tavultesoft']['keymanweb']['initialized']) {
       keymanweb.doControlBlurred(Ltarg,e,keymanweb._IsActivatingKeymanWebUI);
 
       // Hide the OSK when the control is blurred, unless the UI is being temporarily selected
-      if(osk.ready && !keymanweb._IsActivatingKeymanWebUI) osk._Hide(false);
+      if(osk.ready && !keymanweb._IsActivatingKeymanWebUI) {
+        osk._Hide(false);
+      } 
 
       return true;
     }
@@ -3545,6 +3553,12 @@ if(!window['tavultesoft']['keymanweb']['initialized']) {
       var kbdLang = kbdStub['KL'];
       var kbdName = kbdStub['KN'];
 
+      // Append the script tag first to prevent race conditions.
+      try {                                  
+        document.body.appendChild(Lscript);  
+      } catch(ex) {                                                     
+        document.getElementsByTagName('head')[0].appendChild(Lscript);
+      }  
 
       // Add a handler for cases where the new <script> block fails to load.
       Lscript.addEventListener('error', function() {
@@ -3593,12 +3607,12 @@ if(!window['tavultesoft']['keymanweb']['initialized']) {
           
             // Prepare and show the OSK for this keyboard
             osk._Load();
-
-            // Remove the wait message, if defined
-            if(!keymanweb.isEmbedded) {
-              util.wait(false);
-            }
-          } // A handler portion for cases where the new <script> block loads, but fails to process.
+          } 
+          // Remove the wait message, if defined
+          if(!keymanweb.isEmbedded) {
+            util.wait(false);
+          }
+          // A handler portion for cases where the new <script> block loads, but fails to process.
         } else if(!keymanweb.isEmbedded) {  // Do not output error messages when embedded.  (KMEA/KMEI)
             kbdStub.asyncLoader.callback('Error registering the ' + kbdName + ' keyboard for ' + kbdLang + '.');
             console.log('Error registering the', kbdName, 'keyboard for', kbdLang + '.');
@@ -3608,14 +3622,7 @@ if(!window['tavultesoft']['keymanweb']['initialized']) {
 
       // IE likes to instantly start loading the file when assigned to an element, so we do this after the rest
       // of our setup.
-      Lscript.src = keymanweb.getKeyboardPath(kbdFile);  
-
-      try {                                  
-        document.body.appendChild(Lscript);  
-        }
-      catch(ex) {                                                     
-        document.getElementsByTagName('head')[0].appendChild(Lscript);
-        }            
+      Lscript.src = keymanweb.getKeyboardPath(kbdFile);            
     }
 
     /**
